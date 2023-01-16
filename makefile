@@ -4,7 +4,7 @@ linkTarget = RayTracer
 LIBS = -lSDL2
 
 #Flags
-CFLAGS = -std=c++17
+CFLAGS = -std=c++17 -Ofast
 
 #Obj files
 objects = main.o \

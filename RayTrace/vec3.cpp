@@ -74,7 +74,7 @@ vec3 vec3::subtract(double scalar)
     return subtractedVector;
 }
 
-vec3 vec3::add(vec3 &otherVector)
+vec3 vec3::add(const vec3 &otherVector)
 {
     int thisLen = this->value.size();
     int otherLen = otherVector.value.size();
@@ -101,13 +101,14 @@ vec3 vec3::add(double scalar)
     return addedVector;
 }
 
-vec3& vec3::multiply(double multiplier)
+vec3 vec3::multiply(double multiplier)
 {
+    vec3 multipiedVec;
     for(int i=0; i<this->value.size(); i++)
     {
-        this->value.at(i) = this->value.at(i)*multiplier;
+        multipiedVec.value.push_back(this->value[i]*multiplier);
     }
-    return *this;
+    return multipiedVec;
 }
 
 void vec3::normalize()
@@ -134,6 +135,12 @@ vec3 vec3::crossProduct(const vec3 &otherVector)
 
     if(thisLen != 3 || otherLen != 3)
     {
+        if(thisLen != 3 ){
+            std::cout << "Here1" << std::endl;
+        }
+        if(otherLen != 3 ){
+            std::cout << "Here2" << std::endl;
+        }
         throw std::invalid_argument("Cross product is not defined for non-3D vectors.");
     }
 
@@ -145,4 +152,23 @@ vec3 vec3::crossProduct(const vec3 &otherVector)
         crossVector.value.push_back(result);
     }
     return crossVector;
+}
+
+
+double vec3::dotProduct(const vec3 &leftVector, const vec3 &rightVector) {
+    int lVecLen = leftVector.value.size();
+    int rVecLen = rightVector.value.size();
+
+    if(lVecLen != 3 || rVecLen != 3)
+    {
+        throw std::invalid_argument("Dot product is not defined for non-3D vectors.");
+    }
+
+    double resultOfDotProduct = 0;
+
+    for(int i=0; i<lVecLen; i++)
+    {
+        resultOfDotProduct += leftVector.value[i] * rightVector.value[i];
+    }
+    return resultOfDotProduct;
 }

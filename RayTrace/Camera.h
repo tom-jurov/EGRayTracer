@@ -29,7 +29,7 @@ namespace EGRayTracer{
         const double GetHorzSize() const;
         const double GetAspect() const;
 
-        Ray GenerateRay(const float &proScreenX, const float &proScreenY);
+        bool GenerateRay(const float &proScreenX, const float &proScreenY, EGRayTracer::Ray &cameraRay);
 
         void UpdateCameraGeometry();
 

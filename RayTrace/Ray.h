@@ -9,6 +9,7 @@
 namespace EGRayTracer{
     class Ray {
     public:
+        Ray();
         Ray(const vec3 &point1, const vec3 &point2);
 
         const vec3 GetPoint1() const;

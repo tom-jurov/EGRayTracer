@@ -7,6 +7,8 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include "Image.h"
+#include "Camera.h"
+#include "ObjectSphere.h"
 
 namespace EGRayTracer
 {
@@ -16,7 +18,9 @@ namespace EGRayTracer
 
         bool Render(Image &outputImage);
     private:
+        EGRayTracer::Camera m_Camera;
 
+        EGRayTracer::ObjectSphere m_TestSphere;
     };
 }
 

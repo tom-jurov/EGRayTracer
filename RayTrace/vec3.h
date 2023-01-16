@@ -50,7 +50,7 @@ public:
      * @returns a new vec3 containing the result of the operation.
      *
     */
-    vec3 add(vec3 &otherVector);
+    vec3 add(const vec3 &otherVector);
 
     /**
      * Add a scalar to each element of this vector.
@@ -77,7 +77,7 @@ public:
      * @returns a new vec3 containing the result of the operation.
      *
      */
-    vec3& multiply(double multiplier);
+    vec3 multiply(double multiplier);
 
     /**
      * Compute the vector cross product of this vector with another supplied vector.
@@ -89,5 +89,9 @@ public:
      */
     vec3 crossProduct(const vec3 &otherVector);
 
+    static double dotProduct(const vec3 &leftVector, const vec3 &rightVector);
+
 };
+
+
 #endif //RAYTRACER_VEC3_H

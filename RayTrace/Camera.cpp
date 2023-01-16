@@ -80,6 +80,7 @@ void EGRayTracer::Camera::UpdateCameraGeometry() {
     m_AlignmentVector = m_CameraLookAt.subtract(m_CameraPosition);
     m_AlignmentVector.normalize();
 
+
     m_ProjectionScreenU = m_AlignmentVector.crossProduct(m_CameraUp);
     m_ProjectionScreenU.normalize();
     m_ProjectionScreenV = m_ProjectionScreenU.crossProduct(m_AlignmentVector);
@@ -89,9 +90,12 @@ void EGRayTracer::Camera::UpdateCameraGeometry() {
     m_ProjectionScreenV = m_ProjectionScreenV.multiply(m_CameraHorzSize / m_CameraAspectRatio);
 }
 
-EGRayTracer::Ray EGRayTracer::Camera::GenerateRay(const float &proScreenX, const float &proScreenY) {
+bool EGRayTracer::Camera::GenerateRay(const float &proScreenX, const float &proScreenY, EGRayTracer::Ray &cameraRay) {
     vec3 screenWorldTemp = m_ProjectionScreenCenter.add(m_ProjectionScreenU.multiply(proScreenX));
     vec3 screenWorldCoordinate = screenWorldTemp.add(m_ProjectionScreenV.multiply(proScreenY));
+    cameraRay.m_Point1 = m_CameraPosition;
+    cameraRay.m_Point2 = screenWorldCoordinate;
+    cameraRay.m_lab    = screenWorldCoordinate.subtract(m_CameraPosition);
 
-    return EGRayTracer::Ray(m_CameraPosition, screenWorldCoordinate);
+    return true;
 }

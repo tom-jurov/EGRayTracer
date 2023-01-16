@@ -26,28 +26,14 @@ bool CApp::OnInit()
 
         m_Image.Initialize(1280, 720, pRenderer);
 
-        //Test
-        EGRayTracer::Camera testCamera;
-        testCamera.SetPosition(vec3(0.0,0.0,0.0));
-        testCamera.SetLookAt(vec3(0.0, 2.0, 0.0));
-        testCamera.SetUp(vec3(0.0,0.0,1.0));
-        testCamera.SetLength(1.0);
-        testCamera.SetHorzSize(1.0);
-        testCamera.SetAspect(1.0);
-        testCamera.UpdateCameraGeometry();
+        //Set the bg to white
+        SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
+        SDL_RenderClear(pRenderer);
 
-        // Get the screen center and U,V vec
-        auto screenCenter = testCamera.GetScreenCenter();
-        auto screenU = testCamera.GetU();
-        auto screenV= testCamera.GetV();
+        m_Scene.Render(m_Image);
+        m_Image.Display();
 
-        //Display in terminal
-        std::cout << "Camera screen center: " << std::endl;
-        PrintVector(screenCenter);
-        std::cout << "Camer U vec" << std::endl;
-        PrintVector(screenU);
-        std::cout << "Camer V vec" << std::endl;
-        PrintVector(screenV);
+        SDL_RenderPresent(pRenderer);
     }
     else
     {
@@ -93,11 +79,11 @@ void CApp::OnRender()
     SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
     SDL_RenderClear(pRenderer);
     //Render scene
-    m_Scene.Render(m_Image);
+    //m_Scene.Render(m_Image);
 
-    m_Image.Display();
+    //m_Image.Display();
 
-    SDL_RenderPresent(pRenderer);
+    //SDL_RenderPresent(pRenderer);
 }
 
 void CApp::OnExit()
