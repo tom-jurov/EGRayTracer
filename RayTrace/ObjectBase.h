@@ -14,7 +14,7 @@ namespace EGRayTracer{
         virtual ~ObjectBase();
 
         //Testing intersections
-        virtual bool TestIntersections(const Ray &castRay,const vec3 &intPoint,const vec3 &localNormal,const vec3 &localColor);
+        virtual bool TestIntersections(const Ray &castRay,vec3 &intPoint,vec3 &localNormal,const vec3 &localColor);
 
         bool CloseEnough(const double &f1,const double &f2);
 

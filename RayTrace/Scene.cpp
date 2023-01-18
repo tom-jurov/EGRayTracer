@@ -14,6 +14,14 @@ EGRayTracer::Scene::Scene()
     m_Camera.SetHorzSize(0.25);
     m_Camera.SetAspect(16.0/9.0);
     m_Camera.UpdateCameraGeometry();
+
+    // Construct the test Sphere
+    m_ObjectList.push_back(std::make_shared<EGRayTracer::ObjectSphere>  (EGRayTracer::ObjectSphere()));
+
+    //Test light
+    m_LightList.push_back(std::make_shared<EGRayTracer::PointLight> (EGRayTracer::PointLight()));
+    m_LightList[0]->m_Location = vec3(5.0, -10.0, -5.0);
+    m_LightList[0]->m_Color = vec3(255.0, 255.0, 255.0);
 }
 
 bool EGRayTracer::Scene::Render(Image &outputImage)
@@ -31,6 +39,7 @@ bool EGRayTracer::Scene::Render(Image &outputImage)
     double minDist = 1e6;
     double maxDist = 0.0;
     auto start = std::chrono::high_resolution_clock::now();
+    
     for (int y=0; y<ySize; ++y){
         for (int x=0; x<xSize; ++x){
             double normX = (static_cast<double>(x) * xFact) - 1.0;
@@ -38,23 +47,48 @@ bool EGRayTracer::Scene::Render(Image &outputImage)
 
             m_Camera.GenerateRay(normX, normY, cameraRay);
 
-            bool validInt = m_TestSphere.TestIntersections(cameraRay, intPoint, localNormal, localColor);
-
-            if (validInt)
+            // Test for intersections
+            for (auto &currentObject : m_ObjectList)
             {
-                double dist = sqrt(vec3::dotProduct((intPoint.subtract(cameraRay.m_Point1)),intPoint.subtract(cameraRay.m_Point1)));
-                if (dist > maxDist)
-                    maxDist = dist;
+                bool validInt = currentObject->TestIntersections(cameraRay, intPoint, localNormal, localColor);
 
-                if (dist < minDist)
-                    minDist = dist;
+                if (validInt)
+                {
+                    //Compute intensity of illumination
+                    double intensity;
+                    vec3 color;
+                    bool validIllumination = false;
+                    for (auto &currentLight : m_LightList)
+                    {
+                        validIllumination = currentLight->ComputeIllumination(intPoint, localNormal, m_ObjectList, currentObject, color, intensity);
+                    }
 
-                outputImage.SetPixel(x, y, 255.0 - ((dist - 9.0) / 0.94605) * 255.0, 0.0, 0.0);
+
+                    double dist = sqrt(vec3::dotProduct((intPoint.subtract(cameraRay.m_Point1)),intPoint.subtract(cameraRay.m_Point1)));
+                    if (dist > maxDist)
+                        maxDist = dist;
+
+                    if (dist < minDist)
+                        minDist = dist;
+
+                    //outputImage.SetPixel(x, y, 255.0 - ((dist - 9.0) / 0.94605) * 255.0, 0.0, 0.0);
+                    if (validIllumination)
+                    {
+                        outputImage.SetPixel(x, y, 255.0 * intensity, 0.0, 0.0);
+                    }
+                    else
+                    {
+                        outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
+                    }
+                }
+                else
+                {
+                    outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
+                }
             }
-            else
-            {
-                outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
-            }
+
+            //bool validInt = m_TestSphere.TestIntersections(cameraRay, intPoint, localNormal, localColor);
+
 
         }
     }

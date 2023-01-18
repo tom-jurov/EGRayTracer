@@ -14,7 +14,7 @@ EGRayTracer::ObjectSphere::~ObjectSphere()
 
 noexcept {}
 
-bool EGRayTracer::ObjectSphere::TestIntersections(const EGRayTracer::Ray &castRay, vec3 &intPoint, const vec3 &localNormal, const vec3 &localColor) {
+bool EGRayTracer::ObjectSphere::TestIntersections(const EGRayTracer::Ray &castRay, vec3 &intPoint, vec3 &localNormal, const vec3 &localColor) {
     vec3 vhat = castRay.m_lab;
     vhat.normalize();
     //a is always one cuz normalized vec3
@@ -46,6 +46,8 @@ bool EGRayTracer::ObjectSphere::TestIntersections(const EGRayTracer::Ray &castRa
                 intPoint = vhat.multiply(t2).add(castRay.m_Point1);
 
             }
+
+            localNormal = intPoint;
         }
         return true;
     }

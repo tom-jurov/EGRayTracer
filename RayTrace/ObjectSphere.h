@@ -12,7 +12,7 @@ namespace EGRayTracer {
 
         virtual ~ObjectSphere() override;
 
-        virtual bool TestIntersections(const EGRayTracer::Ray &castRay,vec3 &intPoint,const vec3 &localNormal, const vec3 &localColor);
+        virtual bool TestIntersections(const EGRayTracer::Ray &castRay,vec3 &intPoint,vec3 &localNormal, const vec3 &localColor);
 
     private:
 
