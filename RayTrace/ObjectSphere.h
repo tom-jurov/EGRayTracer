@@ -12,7 +12,8 @@ namespace EGRayTracer {
 
         virtual ~ObjectSphere() override;
 
-        virtual bool TestIntersections(const EGRayTracer::Ray &castRay,vec3 &intPoint,vec3 &localNormal, const vec3 &localColor);
+        virtual bool TestIntersections(const EGRayTracer::Ray &castRay,Eigen::Vector3d &intPoint,Eigen::Vector3d &localNormal,
+                                       const Eigen::Vector3d &localColor);
 
     private:
 

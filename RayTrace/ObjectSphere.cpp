@@ -14,14 +14,15 @@ EGRayTracer::ObjectSphere::~ObjectSphere()
 
 noexcept {}
 
-bool EGRayTracer::ObjectSphere::TestIntersections(const EGRayTracer::Ray &castRay, vec3 &intPoint, vec3 &localNormal, const vec3 &localColor) {
-    vec3 vhat = castRay.m_lab;
+bool EGRayTracer::ObjectSphere::TestIntersections(const EGRayTracer::Ray &castRay, Eigen::Vector3d &intPoint, Eigen::Vector3d &localNormal,
+                                                  const Eigen::Vector3d &localColor) {
+    Eigen::Vector3d vhat = castRay.m_lab;
     vhat.normalize();
     //a is always one cuz normalized vec3
     //a = 1.0;
 
-    double b = 2.0 * vec3::dotProduct(castRay.m_Point1, vhat);
-    double c = vec3::dotProduct(castRay.m_Point1, castRay.m_Point1) - 1.0;
+    double b = 2.0 * castRay.m_Point1.dot(vhat);
+    double c = castRay.m_Point1.dot(castRay.m_Point1) - 1.0;
 
     double intTest = (b*b) - 4.0 * c;
 
@@ -38,12 +39,12 @@ bool EGRayTracer::ObjectSphere::TestIntersections(const EGRayTracer::Ray &castRa
         else{
             if (t1 < t2)
             {
-                intPoint = vhat.multiply(t1).add(castRay.m_Point1);
+                intPoint = vhat * t1 + castRay.m_Point1;
 
             }
             else
             {
-                intPoint = vhat.multiply(t2).add(castRay.m_Point1);
+                intPoint = vhat * t2 + castRay.m_Point1;
 
             }
 

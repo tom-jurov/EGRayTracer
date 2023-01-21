@@ -22,7 +22,7 @@ public:
     void OnExit();
 
 private:
-    void PrintVector(const vec3 &inputVector);
+    void PrintVector(const Eigen::Vector3d &inputVector);
 
     Image m_Image;
     EGRayTracer::Scene m_Scene;

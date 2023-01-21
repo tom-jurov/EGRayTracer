@@ -4,20 +4,20 @@
 
 #ifndef RAYTRACER_RAY_H
 #define RAYTRACER_RAY_H
-#include "vec3.h"
+#include "eigen-3.4.0/Eigen/Dense"
 
 namespace EGRayTracer{
     class Ray {
     public:
         Ray();
-        Ray(const vec3 &point1, const vec3 &point2);
+        Ray(const Eigen::Vector3d &point1, const Eigen::Vector3d &point2);
 
-        const vec3 GetPoint1() const;
-        const vec3 GetPoint2() const;
+        const Eigen::Vector3d GetPoint1() const;
+        const Eigen::Vector3d GetPoint2() const;
     public:
-        vec3 m_Point1;
-        vec3 m_Point2;
-        vec3 m_lab;
+        Eigen::Vector3d m_Point1;
+        Eigen::Vector3d m_Point2;
+        Eigen::Vector3d m_lab;
     };
 }
 

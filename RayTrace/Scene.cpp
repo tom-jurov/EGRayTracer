@@ -8,9 +8,9 @@
 
 EGRayTracer::Scene::Scene()
 {
-    m_Camera.SetPosition(vec3(0.0, -10.0, 0.0));
-    m_Camera.SetLookAt(vec3(0.0, 0.0, 0.0));
-    m_Camera.SetUp(vec3(0.0, 0.0, 1.0));
+    m_Camera.SetPosition(Eigen::Vector3d(0.0, -10.0, 0.0));
+    m_Camera.SetLookAt(Eigen::Vector3d(0.0, 0.0, 0.0));
+    m_Camera.SetUp(Eigen::Vector3d(0.0, 0.0, 1.0));
     m_Camera.SetHorzSize(0.25);
     m_Camera.SetAspect(16.0/9.0);
     m_Camera.UpdateCameraGeometry();
@@ -20,8 +20,8 @@ EGRayTracer::Scene::Scene()
 
     //Test light
     m_LightList.push_back(std::make_shared<EGRayTracer::PointLight> (EGRayTracer::PointLight()));
-    m_LightList[0]->m_Location = vec3(5.0, -10.0, -5.0);
-    m_LightList[0]->m_Color = vec3(255.0, 255.0, 255.0);
+    m_LightList[0]->m_Location = Eigen::Vector3d(5.0, -10.0, -5.0);
+    m_LightList[0]->m_Color = Eigen::Vector3d(255.0, 255.0, 255.0);
 }
 
 bool EGRayTracer::Scene::Render(Image &outputImage)
@@ -30,9 +30,9 @@ bool EGRayTracer::Scene::Render(Image &outputImage)
     int ySize = outputImage.GetYSize();
 
     EGRayTracer::Ray cameraRay;
-    vec3 intPoint;
-    vec3 localNormal;
-    vec3 localColor;
+    Eigen::Vector3d intPoint;
+    Eigen::Vector3d localNormal;
+    Eigen::Vector3d localColor;
 
     double xFact = 1.0 / (static_cast<double>(xSize) / 2.0);
     double yFact = 1.0 / (static_cast<double>(ySize) / 2.0);
@@ -56,7 +56,7 @@ bool EGRayTracer::Scene::Render(Image &outputImage)
                 {
                     //Compute intensity of illumination
                     double intensity;
-                    vec3 color;
+                    Eigen::Vector3d color;
                     bool validIllumination = false;
                     for (auto &currentLight : m_LightList)
                     {
@@ -64,7 +64,7 @@ bool EGRayTracer::Scene::Render(Image &outputImage)
                     }
 
 
-                    double dist = sqrt(vec3::dotProduct((intPoint.subtract(cameraRay.m_Point1)),intPoint.subtract(cameraRay.m_Point1)));
+                    double dist = (intPoint - cameraRay.m_Point1).norm();
                     if (dist > maxDist)
                         maxDist = dist;
 

@@ -4,7 +4,7 @@
 
 #ifndef RAYTRACER_OBJECTBASE_H
 #define RAYTRACER_OBJECTBASE_H
-#include "vec3.h"
+#include "eigen-3.4.0/Eigen/Dense"
 #include "Ray.h"
 
 namespace EGRayTracer{
@@ -14,12 +14,12 @@ namespace EGRayTracer{
         virtual ~ObjectBase();
 
         //Testing intersections
-        virtual bool TestIntersections(const Ray &castRay,vec3 &intPoint,vec3 &localNormal,const vec3 &localColor);
+        virtual bool TestIntersections(const Ray &castRay,Eigen::Vector3d &intPoint,Eigen::Vector3d &localNormal,const Eigen::Vector3d &localColor);
 
         bool CloseEnough(const double &f1,const double &f2);
 
     public:
-        vec3 m_BaseColor;
+        Eigen::Vector3d m_BaseColor;
     };
 }
 

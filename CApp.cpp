@@ -2,7 +2,7 @@
 // Created by tomas on 15. 1. 2023.
 //
 #include "CApp.h"
-#include "./RayTrace/vec3.h"
+#include "./RayTrace/eigen-3.4.0/Eigen/Dense"
 #include <iostream>
 
 CApp::CApp()
@@ -94,9 +94,9 @@ void CApp::OnExit()
     SDL_Quit();
 }
 
-void CApp::PrintVector(const vec3 &inputVector)
+void CApp::PrintVector(const Eigen::Vector3d &inputVector)
 {
-    for(int i=0; i<inputVector.value.size(); i++){
-        std::cout << inputVector.value.at(i) << std::endl;
+    for(int i=0; i<inputVector.size(); i++){
+        std::cout << inputVector[i] << std::endl;
     }
 }

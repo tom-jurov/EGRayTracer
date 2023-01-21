@@ -5,7 +5,7 @@
 #ifndef TOMAS_IMAGE_H
 #define TOMAS_IMAGE_H
 #include <string>
-#include <vector>
+#include "eigen-3.4.0/Eigen/Dense"
 #include <SDL2/SDL.h>
 
 class Image {

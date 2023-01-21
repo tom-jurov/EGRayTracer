@@ -16,7 +16,7 @@ EGRayTracer::ObjectBase::~ObjectBase()
 
 }
 
-bool EGRayTracer::ObjectBase::TestIntersections(const Ray &castRay,vec3 &intPoint,vec3 &localNormal, const vec3 &localColor) {
+bool EGRayTracer::ObjectBase::TestIntersections(const Ray &castRay,Eigen::Vector3d &intPoint,Eigen::Vector3d &localNormal, const Eigen::Vector3d &localColor) {
     return false;
 }
 
