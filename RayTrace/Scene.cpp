@@ -3,12 +3,11 @@
 //
 
 #include "Scene.h"
-#include <iostream>
 #include <chrono>
 
 EGRayTracer::Scene::Scene()
 {
-    m_Camera.SetPosition(Eigen::Vector3d(0.0, -10.0, 0.0));
+    m_Camera.SetPosition(Eigen::Vector3d(0.0, -10.0, -1.0));
     m_Camera.SetLookAt(Eigen::Vector3d(0.0, 0.0, 0.0));
     m_Camera.SetUp(Eigen::Vector3d(0.0, 0.0, 1.0));
     m_Camera.SetHorzSize(0.25);
@@ -19,6 +18,17 @@ EGRayTracer::Scene::Scene()
     m_ObjectList.push_back(std::make_shared<EGRayTracer::ObjectSphere>  (EGRayTracer::ObjectSphere()));
     m_ObjectList.push_back(std::make_shared<EGRayTracer::ObjectSphere>  (EGRayTracer::ObjectSphere()));
     m_ObjectList.push_back(std::make_shared<EGRayTracer::ObjectSphere>  (EGRayTracer::ObjectSphere()));
+
+    //Construct plane
+    m_ObjectList.push_back(std::make_shared<EGRayTracer::ObjectPlane>    (EGRayTracer::ObjectPlane()));
+    m_ObjectList[3]->m_BaseColor = Eigen::Vector3d(0.5, 0.5, 0.5);
+
+    EGRayTracer::TF planeMatrix;
+    planeMatrix.SetTransform( Eigen::Vector3d(0.0, 0.0, 0.75),
+                              Eigen::Vector3d(0.0, 0.0, 0.0),
+                              Eigen::Vector3d(4.0, 4.0, 1.0));
+
+    m_ObjectList[3]->SetTransformMatrix(planeMatrix);
 
     EGRayTracer::TF testMatrix1, testMatrix2, testMatrix3;
     testMatrix1.SetTransform(Eigen::Vector3d(-1.5, 0.0, 0.0),
@@ -35,13 +45,21 @@ EGRayTracer::Scene::Scene()
     m_ObjectList[1]->SetTransformMatrix(testMatrix2);
     m_ObjectList[2]->SetTransformMatrix(testMatrix3);
 
-    m_ObjectList[0]->m_BaseColor = Eigen::Vector3d(64.0, 128.0, 200.0);
-    m_ObjectList[1]->m_BaseColor = Eigen::Vector3d(255.0, 128.0, 0.0);
-    m_ObjectList[2]->m_BaseColor = Eigen::Vector3d(255.0, 200.0, 0.0);
+    m_ObjectList[0]->m_BaseColor = Eigen::Vector3d(0.25, 0.5, 0.8);
+    m_ObjectList[1]->m_BaseColor = Eigen::Vector3d(1.0, 0.5, 0.0);
+    m_ObjectList[2]->m_BaseColor = Eigen::Vector3d(1.0, 0.8, 0.0);
     //Test light
     m_LightList.push_back(std::make_shared<EGRayTracer::PointLight> (EGRayTracer::PointLight()));
     m_LightList[0]->m_Location = Eigen::Vector3d(5.0, -10.0, -5.0);
-    m_LightList[0]->m_Color = Eigen::Vector3d(255.0, 255.0, 255.0);
+    m_LightList[0]->m_Color = Eigen::Vector3d(0.0, 0.0, 1.0);
+
+    m_LightList.push_back(std::make_shared<EGRayTracer::PointLight> (EGRayTracer::PointLight()));
+    m_LightList[1]->m_Location = Eigen::Vector3d(-5.0, -10.0, -5.0);
+    m_LightList[1]->m_Color = Eigen::Vector3d(1.0, 0.0, 0.0);
+
+    m_LightList.push_back(std::make_shared<EGRayTracer::PointLight> (EGRayTracer::PointLight()));
+    m_LightList[2]->m_Location = Eigen::Vector3d(0.0, -10.0, -5.0);
+    m_LightList[2]->m_Color = Eigen::Vector3d(0.0, 1.0, 0.0);
 }
 
 bool EGRayTracer::Scene::Render(Image &outputImage)
@@ -60,65 +78,69 @@ bool EGRayTracer::Scene::Render(Image &outputImage)
     double maxDist = 0.0;
     auto start = std::chrono::high_resolution_clock::now();
     
-    for (int y=0; y<ySize; ++y){
-        for (int x=0; x<xSize; ++x){
+    for (int y=0; y<ySize; ++y) {
+        for (int x = 0; x < xSize; ++x) {
             double normX = (static_cast<double>(x) * xFact) - 1.0;
             double normY = (static_cast<double>(y) * yFact) - 1.0;
 
             m_Camera.GenerateRay(normX, normY, cameraRay);
 
+            std::shared_ptr<EGRayTracer::ObjectBase> closestObject;
+            Eigen::Vector3d closestIntPoint;
+            Eigen::Vector3d closestLocalNormal;
+            Eigen::Vector3d closestLocalColor;
+            double minDist = 1e6;
+            bool intersectionFound = false;
+
             // Test for intersections
-            for (auto &currentObject : m_ObjectList)
-            {
+            for (auto &currentObject: m_ObjectList) {
                 bool validInt = currentObject->TestIntersections(cameraRay, intPoint, localNormal, localColor);
 
-                if (validInt)
-                {
-                    //Compute intensity of illumination
-                    double intensity;
-                    Eigen::Vector3d color;
-                    bool validIllumination = false;
-                    for (auto &currentLight : m_LightList)
-                    {
-                        validIllumination = currentLight->ComputeIllumination(intPoint, localNormal, m_ObjectList, currentObject, color, intensity);
-                    }
-
+                if (validInt) {
+                    intersectionFound = true;
 
                     double dist = (intPoint - cameraRay.m_Point1).norm();
-                    if (dist > maxDist)
-                        maxDist = dist;
 
-                    if (dist < minDist)
+                    if (dist < minDist) {
                         minDist = dist;
-
-                    //outputImage.SetPixel(x, y, 255.0 - ((dist - 9.0) / 0.94605) * 255.0, 0.0, 0.0);
-                    if (validIllumination)
-                    {
-                        outputImage.SetPixel(x, y, localColor[0] * intensity,
-                                                   localColor[1] * intensity,
-                                                   localColor[2] * intensity);
+                        closestObject = currentObject;
+                        closestIntPoint = intPoint;
+                        closestLocalNormal = localNormal;
+                        closestLocalColor = localColor;
                     }
-                    else
-                    {
-                        //outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
-                    }
-                }
-                else
-                {
-                    //outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
                 }
             }
+            if (intersectionFound)
+            {
+                double intensity;
+                Eigen::Vector3d color;
+                double red = 0.0;
+                double green = 0.0;
+                double blue = 0.0;
+                bool validIllum = false;
+                bool illumFound = false;
+                for(auto& currentLight : m_LightList)
+                {
+                    validIllum = currentLight->ComputeIllumination(closestIntPoint, closestLocalNormal, m_ObjectList,closestObject, color, intensity);
 
-            //bool validInt = m_TestSphere.TestIntersections(cameraRay, intPoint, localNormal, localColor);
-
-
+                    if(validIllum)
+                    {
+                        illumFound = true;
+                        red += color(0)*intensity;
+                        green += color(1)*intensity;
+                        blue += color(2)*intensity;
+                    }
+                }
+                if (illumFound)
+                {
+                    red *= closestLocalColor(0);
+                    green *= closestLocalColor(1);
+                    blue *= closestLocalColor(2);
+                    outputImage.SetPixel(x, y, red, green, blue);
+                }
+            }
         }
     }
 
-    std::cout << "Minimum distance: " << minDist << std::endl;
-    std::cout << "Maximum distance: " << maxDist << std::endl;
-    auto finish = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> elapsed = finish - start;
-    std::cout << "Elapsed Time: " << elapsed.count()/1000 << " seconds" << std::endl;
     return true;
 }

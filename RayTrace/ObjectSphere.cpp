@@ -4,7 +4,6 @@
 
 #include "ObjectSphere.h"
 #include <cmath>
-#include <iostream>
 EGRayTracer::ObjectSphere::ObjectSphere()
 {
 

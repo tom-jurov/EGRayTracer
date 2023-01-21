@@ -10,6 +10,7 @@
 #include "Image.h"
 #include "Camera.h"
 #include "ObjectSphere.h"
+#include "ObjectPlane.h"
 #include "PointLight.hpp"
 
 

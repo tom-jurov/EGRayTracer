@@ -4,7 +4,6 @@
 
 #ifndef TOMAS_IMAGE_H
 #define TOMAS_IMAGE_H
-#include <string>
 #include "eigen-3.4.0/Eigen/Dense"
 #include <SDL2/SDL.h>
 
@@ -26,6 +25,7 @@ public:
 private:
     Uint32 ConvertColor(const double &red, const double &green, const double &blue);
     void InitTexture();
+    void ComputeMaxValues();
 
 private:
     std::vector<std::vector<double>> m_rChannel;
@@ -33,6 +33,8 @@ private:
     std::vector<std::vector<double>> m_bChannel;
 
     int m_xSize, m_ySize;
+
+    double m_maxRed, m_maxGreen, m_maxBlue, m_overallMax;
 
     SDL_Renderer *m_pRenderer;
     SDL_Texture *m_pTexture;

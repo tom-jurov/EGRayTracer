@@ -4,7 +4,6 @@
 
 #include "Camera.h"
 #include "Ray.h"
-#include "iostream"
 
 EGRayTracer::Camera::Camera()
 {

@@ -20,22 +20,50 @@ bool EGRayTracer::PointLight::ComputeIllumination(const Eigen::Vector3d& intPoin
     //Compute the starting point
     Eigen::Vector3d startPoint = intPoint;
 
-    //compute the angle between local normal and light ray
-    double angle = acos(localNormal.dot(lightDir));
+    //Construct a ray from the point of intersection to the light
+    EGRayTracer::Ray lightRay (startPoint, startPoint + lightDir);
 
-    // If normal is pointing away from the light, then we have no illumination.
-    if (angle > 1.5708)
+    Eigen::Vector3d poi;
+    Eigen::Vector3d poiNormal;
+    Eigen::Vector3d poiColor;
+    bool validInt = false;
+    for(auto& sceneObject : objectList)
     {
-        // No illumination.
+        if (sceneObject != currentObject)
+        {
+            validInt = sceneObject->TestIntersections(lightRay, poi, poiNormal, poiColor);
+        }
+
+        // If we have an inter, then there is no point checking futher
+        if (validInt) {
+            //std::cout << currentObject << std::endl;
+            break;
+        }
+    }
+
+    if(!validInt)
+    {
+        double angle = acos(localNormal.dot(lightDir));
+
+        if(angle > 1.5708)
+        {
+            color = m_Color;
+            intensity = 0.0;
+            return false;
+        }
+        else
+        {
+            color = m_Color;
+            intensity = m_Intensity * (1.0 - (angle / 1.5708));
+            return true;
+        }
+    }
+    else
+    {
         color = m_Color;
         intensity = 0.0;
         return false;
     }
-    else 
-    {
-        // We do have a illumination
-        color = m_Color;
-        intensity = m_Intensity * (1.0 - (angle / 1.5708));
-        return true;
-    }
+
+    return true;
 }
