@@ -4,6 +4,7 @@
 
 #include "Scene.h"
 #include <chrono>
+#include <iostream>
 
 EGRayTracer::Scene::Scene()
 {
@@ -122,7 +123,6 @@ bool EGRayTracer::Scene::Render(Image &outputImage)
                 for(auto& currentLight : m_LightList)
                 {
                     validIllum = currentLight->ComputeIllumination(closestIntPoint, closestLocalNormal, m_ObjectList,closestObject, color, intensity);
-
                     if(validIllum)
                     {
                         illumFound = true;
@@ -130,6 +130,13 @@ bool EGRayTracer::Scene::Render(Image &outputImage)
                         green += color(1)*intensity;
                         blue += color(2)*intensity;
                     }
+                    /*if(x==1249 && y==500)
+                    {
+                        std::cout << validIllum << std::endl;
+                        red = 1.0;
+                        green = 1.0;
+                        blue = 1.0;
+                    }*/
                 }
                 if (illumFound)
                 {

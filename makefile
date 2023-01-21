@@ -21,7 +21,11 @@ $(linkTarget): $(objects)
 %.o: %.cpp
 	g++ -o $@ -c $< $(CFLAGS)
 
-.PHONEY:
+.PHONY:	clean
 clean:
-	rm $(rebuildables)
+	-rm -rf $(rebuildables)
+
+.PHONY:	debug
+debug:	CFLAGS += -g
+debug:	$(linkTarget)
 	

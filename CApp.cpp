@@ -14,8 +14,9 @@ CApp::CApp()
 
 bool CApp::OnInit()
 {
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
+        std::cout << "Error : " << SDL_GetError() << std::endl;
         return false;
     }
     pWindow = SDL_CreateWindow("RayTracer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_SHOWN);
@@ -55,7 +56,6 @@ int CApp::OnExecute()
         while (SDL_PollEvent(&event) != 0) {
             OnEvent(&event);
         }
-        OnLoop();
         OnRender();
     }
     return 0;
@@ -67,11 +67,6 @@ void CApp::OnEvent(SDL_Event *event)
     {
         isRunning = false;
     }
-}
-
-void CApp::OnLoop()
-{
-
 }
 
 void CApp::OnRender()

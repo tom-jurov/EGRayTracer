@@ -4,7 +4,7 @@
 
 #include "Image.h"
 #include <memory>
-
+#include <iostream>
 Image::Image()
 {
     m_xSize = 0;
@@ -90,11 +90,12 @@ void Image::InitTexture()
 #endif
 
     if(m_pTexture != nullptr)
-    {SDL_DestroyTexture(m_pTexture);}
+    {
+        SDL_DestroyTexture(m_pTexture);
+    }
     SDL_Surface *tempSurface = SDL_CreateRGBSurface(0, m_xSize, m_ySize, 32, rmask, gmask, bmask, amask);
     m_pTexture = SDL_CreateTextureFromSurface(m_pRenderer, tempSurface);
     SDL_FreeSurface(tempSurface);
-
 }
 
 Uint32 Image::ConvertColor(const double &red, const double &green, const double &blue)
