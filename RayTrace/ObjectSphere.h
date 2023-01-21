@@ -5,6 +5,7 @@
 #ifndef RAYTRACER_OBJECTSPHERE_H
 #define RAYTRACER_OBJECTSPHERE_H
 #include "ObjectBase.h"
+#include "TF.h"
 namespace EGRayTracer {
     class ObjectSphere : public ObjectBase{
     public:
@@ -13,7 +14,8 @@ namespace EGRayTracer {
         virtual ~ObjectSphere() override;
 
         virtual bool TestIntersections(const EGRayTracer::Ray &castRay,Eigen::Vector3d &intPoint,Eigen::Vector3d &localNormal,
-                                       const Eigen::Vector3d &localColor);
+                                       Eigen::Vector3d &localColor) override;
+
 
     private:
 

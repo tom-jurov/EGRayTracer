@@ -4,7 +4,7 @@
 
 #ifndef RAYTRACER_OBJECTBASE_H
 #define RAYTRACER_OBJECTBASE_H
-#include "eigen-3.4.0/Eigen/Dense"
+#include "TF.h"
 #include "Ray.h"
 
 namespace EGRayTracer{
@@ -14,12 +14,18 @@ namespace EGRayTracer{
         virtual ~ObjectBase();
 
         //Testing intersections
-        virtual bool TestIntersections(const Ray &castRay,Eigen::Vector3d &intPoint,Eigen::Vector3d &localNormal,const Eigen::Vector3d &localColor);
+        virtual bool TestIntersections(const Ray &castRay,Eigen::Vector3d &intPoint,Eigen::Vector3d &localNormal,Eigen::Vector3d &localColor);
+
+        //Function to set the transform matrix
+        void SetTransformMatrix(const EGRayTracer::TF &transformMatrix);
 
         bool CloseEnough(const double &f1,const double &f2);
 
     public:
         Eigen::Vector3d m_BaseColor;
+
+        // The geom transform applied to the object
+        EGRayTracer::TF m_transformMatrix;
     };
 }
 

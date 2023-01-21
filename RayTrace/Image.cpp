@@ -33,9 +33,9 @@ void Image::Initialize(const int &xSize, const int &ySize, SDL_Renderer *pRender
 
 void Image::SetPixel(const int &x, const int &y, const double &red, const double &green, const double &blue)
 {
-    m_rChannel.at(x).at(y) = red;
-    m_gChannel.at(x).at(y) = green;
-    m_bChannel.at(x).at(y) = blue;
+    m_rChannel[x][y] = red;
+    m_gChannel[x][y] = green;
+    m_bChannel[x][y] = blue;
 }
 
 const int Image::GetXSize() const
@@ -56,7 +56,7 @@ void Image::Display()
 
     for(int y=0; y<m_ySize; ++y){
         for(int x=0; x<m_xSize; ++x){
-            tempPixels[(y*m_xSize)+x] = ConvertColor(m_rChannel.at(x).at(y),m_gChannel.at(x).at(y),m_bChannel.at(x).at(y));
+            tempPixels[(y*m_xSize)+x] = ConvertColor(m_rChannel[x][y],m_gChannel[x][y],m_bChannel[x][y]);
 
         }
     }
